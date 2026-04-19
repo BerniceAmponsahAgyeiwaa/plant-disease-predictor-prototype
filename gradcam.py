@@ -56,7 +56,7 @@ def generate_gradcam(model, img_array, class_index=None, original_image_pil: Ima
         conv_outputs, predictions = grad_model(img_tensor)
         if class_index is None:
             class_index = tf.argmax(predictions[0])
-        class_channel = predictions[:, class_index]
+        class_channel = tf.convert_to_tensor(predictions)[:, class_index]
 
     # gradients of the class wrt conv outputs
     grads = tape.gradient(class_channel, conv_outputs)  # shape (1, H, W, C)
