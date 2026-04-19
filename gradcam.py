@@ -55,6 +55,10 @@ def generate_gradcam(model, img_array, class_index=None, original_image_pil: Ima
     with tf.GradientTape() as tape:
         tape.watch(img_tensor)
         conv_outputs, predictions = grad_model(img_tensor)
+        # Force predictions to a single tensor regardless of model output format
+        if isinstance(predictions, (list, tuple)):
+            predictions = tf.concat(predictions, axis=-1)
+        predictions = tf.cast(predictions, tf.float32)
         if class_index is None:
             class_index = int(tf.argmax(predictions[0]).numpy())
         class_index = int(class_index)
